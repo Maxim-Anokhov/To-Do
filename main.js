@@ -30,17 +30,25 @@ function createTask(taskName, id) {
     checkTask(task);
 }
 
+// recursya
 function checkTask(task) {
-
     const addedTasksName = [];
-    document.querySelectorAll(".content").forEach(item => addedTasksName.push(item.textContent));
+    const name = Array.from(document.querySelectorAll(".content"));
+    let i = 0;
+
+    function add_taskName() {
+
+        addedTasksName.push(name[i++].textContent);
+        if (i >= name.length) return;
+        add_taskName();
+    }
+    add_taskName();
+
     const addedTask = addedTasksName.find(name => task.taskName == name);
 
     if (task.taskName !== addedTask) {
-
         setStorege(task);
         addTask(task);
-
     } else { alert("this task has already been added") }
 }
 
@@ -79,28 +87,22 @@ function deleteTask(event) {
 
 }
 
+// recursya
 function startList() {
-
     const tasks = storageGetTask();
-    if (localStorage.getItem("task") != null) {
-        tasks.forEach(task => {
-            addTask(task);
-            tasksList.add(task);
-        });
+    let i = 0;
+    let j = 0;
+
+    if (localStorage.getItem !== null) {
+        add_task_from_storage(tasks);
+    }
+
+    function add_task_from_storage(tasks) {
+
+        addTask(tasks[i++]);
+        tasksList.add(tasks[j++]);
+        if (i >= tasks.length) return;
+        add_task_from_storage(tasks);
     }
 }
 startList();
-
-import { compareAsc, format } from 'date-fns';
-
-
-format(new Date(2022, 4, 5), "yyyy,MM,dd");
-
-const dates = [
-
-    new Date(1995, 6, 2),
-    new Date(1987, 3, 12),
-    new Date(1989, 6, 18),
-]
-dates.sort(compareAsc);
-console.log(dates);
