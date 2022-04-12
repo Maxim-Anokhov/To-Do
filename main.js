@@ -15,40 +15,31 @@ function getTaskName(event) {
 
 function createTask(taskName, id) {
 
-    const html_element = `<div class="paragraf greenStyle">
+    const task = new Task(taskName, id);
+    task.prototype = `<div class="paragraf greenStyle">
         <input class="leftButton greenStyle" id="changeStatusTask" type="button">
         <p class="content" id="p1">${taskName}</p>
         <input class="deleteTask" id="deleteTask" type="button">
         </div>`;
-    const task = new Task(taskName, id, html_element);
 
-    function Task(taskName, id, html_element) {
+    function Task(taskName, id) {
         this.taskName = taskName;
         this.priority = id;
-        this.element = html_element;
     }
     checkTask(task);
 }
 
-// recursya
 function checkTask(task) {
+
     const addedTasksName = [];
-    const name = Array.from(document.querySelectorAll(".content"));
-    let i = 0;
-
-    function add_taskName() {
-
-        addedTasksName.push(name[i++].textContent);
-        if (i >= name.length) return;
-        add_taskName();
-    }
-    add_taskName();
-
+    document.querySelectorAll(".content").forEach(item => addedTasksName.push(item.textContent));
     const addedTask = addedTasksName.find(name => task.taskName == name);
 
     if (task.taskName !== addedTask) {
+
         setStorege(task);
         addTask(task);
+
     } else { alert("this task has already been added") }
 }
 
@@ -58,10 +49,10 @@ function addTask(task) {
     const taskHigh = document.querySelector(".high");
 
     if (task.priority != "high") {
-        taskLow.insertAdjacentHTML("beforeend", task.element);
+        taskLow.insertAdjacentHTML("beforeend", task.prototype);
     }
     if (task.priority != "low") {
-        taskHigh.insertAdjacentHTML("beforeend", task.element);
+        taskHigh.insertAdjacentHTML("beforeend", task.prototype);
     }
     document.querySelectorAll(".leftButton").forEach(button => button.addEventListener("click", changeStatus));
     document.querySelectorAll(".deleteTask").forEach(button => button.addEventListener("click", deleteTask));
@@ -87,22 +78,14 @@ function deleteTask(event) {
 
 }
 
-// recursya
 function startList() {
+
     const tasks = storageGetTask();
-    let i = 0;
-    let j = 0;
-
-    if (localStorage.getItem !== null) {
-        add_task_from_storage(tasks);
-    }
-
-    function add_task_from_storage(tasks) {
-
-        addTask(tasks[i++]);
-        tasksList.add(tasks[j++]);
-        if (i >= tasks.length) return;
-        add_task_from_storage(tasks);
+    if (localStorage.getItem("task") != null) {
+        tasks.forEach(task => {
+            addTask(task);
+            tasksList.add(task);
+        });
     }
 }
 startList();
